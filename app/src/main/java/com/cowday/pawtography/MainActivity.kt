@@ -16,7 +16,6 @@ import com.cowday.pawtography.ui.theme.PawtographyTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             PawtographyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
