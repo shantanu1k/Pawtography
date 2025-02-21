@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.cowday.pawtography"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.cowday.pawtography"
