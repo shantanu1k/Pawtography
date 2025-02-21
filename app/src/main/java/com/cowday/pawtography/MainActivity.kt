@@ -11,9 +11,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModelProvider
+import com.cowday.pawtography.data.DogRepository
+import com.cowday.pawtography.network.RetrofitClient
 import com.cowday.pawtography.ui.theme.PawtographyTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val dogRepository: DogRepository by lazy {
+        DogRepository(RetrofitClient.api)
+    }
+    private val viewModel by lazy {
+        val factory = MainViewModel.MainViewModelFactory(dogRepository)
+        ViewModelProvider(this, factory)[MainViewModel::class.java]
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
