@@ -39,7 +39,8 @@ fun HomeScreen(
                 modifier = Modifier,
                 text = stringResource(R.string.title_home_page),
                 style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSecondary
             )
         }
         Column(
