@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -49,6 +50,29 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    // Coil - Image loading library
+    implementation(libs.compose.coil)
+
+    // Retrofit - HTTP client for Android
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    // ViewModel for Compose
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // Compose Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    // Coroutine
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Room
+    implementation(libs.androidx.room)
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
