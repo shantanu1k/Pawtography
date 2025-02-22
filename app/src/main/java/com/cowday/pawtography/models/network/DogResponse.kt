@@ -1,5 +1,6 @@
 package com.cowday.pawtography.models.network
 
+import com.cowday.pawtography.models.local.DogEntity
 import com.google.gson.annotations.SerializedName
 
 data class DogResponse(
@@ -9,6 +10,11 @@ data class DogResponse(
     val status: RequestStatus? = null,
     @SerializedName("code")
     val requestCode: Int? = null,
+)
+
+fun DogResponse.asEntity() = DogEntity(
+    timestamp = System.currentTimeMillis(),
+    imageUrl = message ?: ""
 )
 
 enum class RequestStatus(val value: String) {
