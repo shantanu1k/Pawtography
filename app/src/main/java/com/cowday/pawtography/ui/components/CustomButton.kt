@@ -48,7 +48,7 @@ fun CustomButton(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.bodyLarge,
             color = if (isEnabled) {
                 Color.White
             } else {
