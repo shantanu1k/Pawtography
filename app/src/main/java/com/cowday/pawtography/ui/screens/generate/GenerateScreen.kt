@@ -76,6 +76,7 @@ fun GenerateScreen(
                                         route = PawtographyNavScreen.HOME.route,
                                         inclusive = false
                                     )
+                                    viewModel.resetGenerateScreenState()
                                 },
                                 interactionSource = null
                             ),
@@ -104,11 +105,9 @@ fun GenerateScreen(
         when(val state = generateScreenState.value) {
             is MainViewModel.GenerateDogsScreenState.Error -> {
                 isLoading.value = false
-                Toast.makeText(LocalContext.current, state.message, Toast.LENGTH_SHORT).show()
             }
             MainViewModel.GenerateDogsScreenState.Initial -> {
                 isLoading.value = false
-                imageUrl.value = null
             }
             MainViewModel.GenerateDogsScreenState.Loading -> {
                 isLoading.value = true

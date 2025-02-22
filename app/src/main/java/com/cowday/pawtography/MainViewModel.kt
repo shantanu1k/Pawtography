@@ -29,7 +29,7 @@ class MainViewModel(
                 val response = dogRepository.getDogImage()
                 if (response.isSuccessful && response.body() != null) {
                     if (response.body()!!.message == null) {
-                        _generateDogsScreenState.value = GenerateDogsScreenState.Error()
+                        _generateDogsScreenState.value = GenerateDogsScreenState.Error
                     } else {
                         updateDogTable(response.body()!!)
                         _generateDogsScreenState.value = GenerateDogsScreenState.Success(
@@ -38,10 +38,10 @@ class MainViewModel(
                     }
                 }
                 else {
-                    _generateDogsScreenState.value = GenerateDogsScreenState.Error()
+                    _generateDogsScreenState.value = GenerateDogsScreenState.Error
                 }
             } catch (e: Exception) {
-                _generateDogsScreenState.value = GenerateDogsScreenState.Error(e.message)
+                _generateDogsScreenState.value = GenerateDogsScreenState.Error
             }
         }
     }
@@ -57,6 +57,10 @@ class MainViewModel(
                 imageLoader?.diskCache?.remove(it.imageUrl)
             }
         }
+    }
+
+    fun resetGenerateScreenState() {
+        _generateDogsScreenState.value = GenerateDogsScreenState.Initial
     }
 
     @OptIn(ExperimentalCoilApi::class)
@@ -93,7 +97,7 @@ class MainViewModel(
         data object Initial: GenerateDogsScreenState()
         data object Loading: GenerateDogsScreenState()
         data class Success(val imageUrl: String): GenerateDogsScreenState()
-        data class Error(val message: String? = null): GenerateDogsScreenState()
+        data object Error: GenerateDogsScreenState()
     }
 
     companion object {
