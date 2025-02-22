@@ -1,5 +1,6 @@
 package com.cowday.pawtography.ui.screens.generate
 
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,10 +8,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -114,19 +117,34 @@ fun GenerateScreen(
             }
         }
 
-        MainContent(
-            imageUrl = imageUrl,
-            isLoading = isLoading.value,
-            onGenerateClick = {
-                viewModel.getDogImage()
-            },
-            modifier = Modifier.padding(contentPadding)
-        )
+        when(LocalConfiguration.current.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                MainContentPortrait(
+                    imageUrl = imageUrl,
+                    isLoading = isLoading.value,
+                    onGenerateClick = {
+                        viewModel.getDogImage()
+                    },
+                    modifier = Modifier.padding(contentPadding)
+                )
+            }
+            else -> {
+                MainContentLandscape(
+                    imageUrl = imageUrl,
+                    isLoading = isLoading.value,
+                    onGenerateClick = {
+                        viewModel.getDogImage()
+                    },
+                    modifier = Modifier.padding(contentPadding)
+                )
+            }
+        }
+
     }
 }
 
 @Composable
-private fun MainContent(
+private fun MainContentPortrait(
     imageUrl: MutableState<String?>,
     isLoading: Boolean,
     onGenerateClick: () -> Unit,
@@ -157,9 +175,56 @@ private fun MainContent(
     }
 }
 
+@Composable
+private fun MainContentLandscape(
+    imageUrl: MutableState<String?>,
+    isLoading: Boolean,
+    onGenerateClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val targetWidth = LocalConfiguration.current.screenWidthDp * 0.48f
+    Row(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.secondary)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CustomButton(
+            text = stringResource(R.string.button_generate),
+            onClick = { onGenerateClick() },
+            isEnabled = !isLoading
+        )
+        AsyncImage(
+            model = imageUrl.value,
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(targetWidth.dp),
+            contentDescription = null
+        )
+    }
+}
+
 @Preview
 @Composable
-private fun GenerateScreenPreview() {
+private fun GenerateScreenPortraitPreview() {
+    GenerateScreen(
+        viewModel = MainViewModel(
+            DogRepository(
+                RetrofitClient.api,
+                DogDatabase.getDatabase(
+                    LocalContext.current
+                )
+            )
+        ),
+        navController = NavController(LocalContext.current)
+    )
+}
+
+@Preview(widthDp = 640, heightDp = 360)
+@Composable
+private fun GenerateScreenLandscapePreview() {
     GenerateScreen(
         viewModel = MainViewModel(
             DogRepository(
