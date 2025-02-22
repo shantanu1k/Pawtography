@@ -31,7 +31,7 @@ class MainViewModel(
                     if (response.body()!!.message == null) {
                         _generateDogsScreenState.value = GenerateDogsScreenState.Error()
                     } else {
-                        updateDogDatabase(response.body()!!)
+                        updateDogTable(response.body()!!)
                         _generateDogsScreenState.value = GenerateDogsScreenState.Success(
                             response.body()!!.message!!
                         )
@@ -60,7 +60,7 @@ class MainViewModel(
     }
 
     @OptIn(ExperimentalCoilApi::class)
-    private suspend fun updateDogDatabase(dogResponse: DogResponse) {
+    private suspend fun updateDogTable(dogResponse: DogResponse) {
         val recentRecords = dogRepository.getRecentDogRecords().firstOrNull() ?: return
         val oldestRecord = recentRecords.lastOrNull() ?: run {
             dogRepository.insertDogRecord(dogResponse.asEntity())
