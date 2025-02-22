@@ -1,15 +1,20 @@
 package com.cowday.pawtography.ui.screens.cache
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -49,7 +54,6 @@ fun CacheScreen(
     viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
-    val targetHeight = LocalConfiguration.current.screenHeightDp * 0.4f
     Scaffold(
         topBar = {
             CenterTitleAppBar(
@@ -95,49 +99,128 @@ fun CacheScreen(
             )
         }
     ) { contentPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding)
-                .background(color = MaterialTheme.colorScheme.secondary),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            val listState = rememberLazyListState()
-            val dogImages = viewModel.getRecentDogRecords().collectAsState(null)
-            LazyRow(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(targetHeight.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(dogImages.value ?: emptyList()) {
-                    AsyncImage(
-                        model = it.imageUrl,
-                        modifier = Modifier
-                            .fillParentMaxHeight()
-                            .fillParentMaxWidth(0.93f),
-                        contentScale = ContentScale.FillBounds,
-                        contentDescription = null
-                    )
-                }
+        when(LocalConfiguration.current.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                MainContentPortrait(contentPadding, viewModel)
             }
-            Spacer(modifier = Modifier.height(16.dp))
-            CustomButton(
-                modifier = Modifier,
-                text = stringResource(R.string.button_clear_dogs),
-                onClick = {
-                    viewModel.deleteAllDogRecords()
-                },
-            )
+            else -> {
+                MainContentLandscape(contentPadding, viewModel)
+            }
+        }
+    }
+}
+
+@Composable
+private fun MainContentPortrait(
+    contentPadding: PaddingValues,
+    viewModel: MainViewModel
+) {
+    val targetHeight = LocalConfiguration.current.screenHeightDp * 0.4f
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(contentPadding)
+            .background(color = MaterialTheme.colorScheme.secondary),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val listState = rememberLazyListState()
+        val dogImages = viewModel.getRecentDogRecords().collectAsState(null)
+        LazyRow(
+            state = listState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(targetHeight.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(dogImages.value ?: emptyList()) {
+                AsyncImage(
+                    model = it.imageUrl,
+                    modifier = Modifier
+                        .fillParentMaxHeight()
+                        .fillParentMaxWidth(0.93f),
+                    contentScale = ContentScale.FillBounds,
+                    contentDescription = null
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        CustomButton(
+            modifier = Modifier,
+            text = stringResource(R.string.button_clear_dogs),
+            onClick = {
+                viewModel.deleteAllDogRecords()
+            },
+        )
+    }
+}
+
+@Composable
+private fun MainContentLandscape(
+    contentPadding: PaddingValues,
+    viewModel: MainViewModel
+) {
+    val targetWidth = LocalConfiguration.current.screenWidthDp * 0.45f
+    Row (
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(contentPadding)
+            .background(color = MaterialTheme.colorScheme.secondary),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val listState = rememberLazyListState()
+        val dogImages = viewModel.getRecentDogRecords().collectAsState(null)
+        CustomButton(
+            modifier = Modifier,
+            text = stringResource(R.string.button_clear_dogs),
+            onClick = {
+                viewModel.deleteAllDogRecords()
+            },
+        )
+        Spacer(modifier = Modifier.width(24.dp))
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(targetWidth.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(dogImages.value ?: emptyList()) {
+                AsyncImage(
+                    model = it.imageUrl,
+                    modifier = Modifier
+                        .fillParentMaxWidth()
+                        .fillParentMaxHeight(0.93f),
+                    contentScale = ContentScale.FillBounds,
+                    contentDescription = null
+                )
+            }
         }
     }
 }
 
 @Preview
 @Composable
-private fun CacheScreenPreview() {
+private fun CacheScreenPortraitPreview() {
+    PawtographyTheme {
+        CacheScreen(
+            navController = NavController(LocalContext.current),
+            viewModel = MainViewModel(
+                DogRepository(
+                    RetrofitClient.api,
+                    DogDatabase.getDatabase(
+                        LocalContext.current
+                    )
+                )
+            )
+        )
+    }
+}
+
+@Preview(heightDp = 360, widthDp = 640)
+@Composable
+private fun CacheScreenLandscapePreview() {
     PawtographyTheme {
         CacheScreen(
             navController = NavController(LocalContext.current),
