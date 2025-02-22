@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -37,12 +35,13 @@ import coil.compose.AsyncImage
 import com.cowday.pawtography.MainViewModel
 import com.cowday.pawtography.R
 import com.cowday.pawtography.data.DogRepository
+import com.cowday.pawtography.database.DogDatabase
 import com.cowday.pawtography.network.RetrofitClient
+import com.cowday.pawtography.ui.components.CenterTitleAppBar
 import com.cowday.pawtography.ui.components.CustomButton
 import com.cowday.pawtography.ui.navigation.PawtographyNavScreen
 import com.cowday.pawtography.ui.theme.blue
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenerateScreen(
     navController: NavController,
@@ -51,16 +50,16 @@ fun GenerateScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
+            CenterTitleAppBar(
                 modifier = modifier
                     .background(color = MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 4.dp, vertical = 0.dp)
-                    .shadow(elevation = 1.dp),
+                    .shadow(elevation = 2.dp),
                 title = {
                     Text(
                         text = stringResource(R.string.button_generate_dogs),
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                 },
                 navigationIcon = {
@@ -69,7 +68,10 @@ fun GenerateScreen(
                             .clickable(
                                 indication = null,
                                 onClick = {
-                                    navController.navigate(PawtographyNavScreen.HOME.route)
+                                    navController.popBackStack(
+                                        route = PawtographyNavScreen.HOME.route,
+                                        inclusive = false
+                                    )
                                 },
                                 interactionSource = null
                             ),
@@ -81,9 +83,10 @@ fun GenerateScreen(
                             contentDescription = null
                         )
                         Text(
-                            text = "Back",
+                            text = stringResource(R.string.label_back),
                             color = blue,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }
@@ -129,7 +132,7 @@ private fun MainContent(
     onGenerateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val targetHeight = LocalConfiguration.current.screenHeightDp * 0.35f
+    val targetHeight = LocalConfiguration.current.screenHeightDp * 0.4f
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -145,7 +148,7 @@ private fun MainContent(
                 .height(targetHeight.dp),
             contentDescription = null
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(36.dp))
         CustomButton(
             text = stringResource(R.string.button_generate),
             onClick = { onGenerateClick() },
@@ -158,7 +161,14 @@ private fun MainContent(
 @Composable
 private fun GenerateScreenPreview() {
     GenerateScreen(
-        viewModel = MainViewModel(DogRepository(RetrofitClient.api)),
+        viewModel = MainViewModel(
+            DogRepository(
+                RetrofitClient.api,
+                DogDatabase.getDatabase(
+                    LocalContext.current
+                )
+            )
+        ),
         navController = NavController(LocalContext.current)
     )
 }
