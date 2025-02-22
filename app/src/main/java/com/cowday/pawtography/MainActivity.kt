@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
+import coil.imageLoader
 import com.cowday.pawtography.data.DogRepository
 import com.cowday.pawtography.network.RetrofitClient
 import com.cowday.pawtography.ui.navigation.PawtographyNavGraph
@@ -17,10 +18,10 @@ import com.cowday.pawtography.ui.theme.PawtographyTheme
 class MainActivity : ComponentActivity() {
 
     private val dogRepository: DogRepository by lazy {
-        DogRepository(RetrofitClient.api)
+        DogRepository(RetrofitClient.api, (application as PawtographyApplication).dogDatabase)
     }
     private val viewModel by lazy {
-        val factory = MainViewModel.MainViewModelFactory(dogRepository)
+        val factory = MainViewModel.MainViewModelFactory(dogRepository, imageLoader)
         ViewModelProvider(this, factory)[MainViewModel::class.java]
     }
     override fun onCreate(savedInstanceState: Bundle?) {
