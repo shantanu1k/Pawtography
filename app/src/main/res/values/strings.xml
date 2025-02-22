@@ -5,4 +5,5 @@
     <string name="button_my_recently_generated_dogs">My Recently Generated Dogs!</string>
     <string name="button_generate">Generate!</string>
     <string name="button_clear_dogs">Clear Dogs!</string>
+    <string name="label_back">Back</string>
 </resources>
