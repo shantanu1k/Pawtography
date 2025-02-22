@@ -71,4 +71,8 @@ fun PawtographyNavGraph(
     }
 }
 
+fun NavHostController.navigateSingleTopTo(route: String) = this.navigate(route) {
+    launchSingleTop = true
+}
+
 private const val SLIDING_TRANSITION_DURATION_IN_MILLIS = 400
