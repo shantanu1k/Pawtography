@@ -35,7 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.cowday.pawtography.MainViewModel
 import com.cowday.pawtography.R
@@ -50,7 +51,7 @@ import com.cowday.pawtography.ui.theme.blue
 
 @Composable
 fun CacheScreen(
-    navController: NavController,
+    navController: NavHostController,
     viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -205,7 +206,7 @@ private fun MainContentLandscape(
 private fun CacheScreenPortraitPreview() {
     PawtographyTheme {
         CacheScreen(
-            navController = NavController(LocalContext.current),
+            navController = rememberNavController(),
             viewModel = MainViewModel(
                 DogRepository(
                     RetrofitClient.api,
@@ -223,7 +224,7 @@ private fun CacheScreenPortraitPreview() {
 private fun CacheScreenLandscapePreview() {
     PawtographyTheme {
         CacheScreen(
-            navController = NavController(LocalContext.current),
+            navController = rememberNavController(),
             viewModel = MainViewModel(
                 DogRepository(
                     RetrofitClient.api,

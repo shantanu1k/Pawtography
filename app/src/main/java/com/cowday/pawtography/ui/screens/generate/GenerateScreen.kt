@@ -20,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,7 +32,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.cowday.pawtography.MainViewModel
 import com.cowday.pawtography.R
@@ -47,7 +48,7 @@ import com.cowday.pawtography.ui.theme.blue
 
 @Composable
 fun GenerateScreen(
-    navController: NavController,
+    navController: NavHostController,
     viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -97,7 +98,7 @@ fun GenerateScreen(
         }
     ) { contentPadding ->
         val imageUrl: MutableState<String?> = remember { mutableStateOf(null) }
-        val generateScreenState = viewModel.generateDogsScreenState.collectAsState()
+        val generateScreenState = viewModel.generateDogsScreenState.collectAsStateWithLifecycle()
         val isLoading = remember { mutableStateOf(false) }
 
         when(val state = generateScreenState.value) {
@@ -107,6 +108,7 @@ fun GenerateScreen(
             }
             MainViewModel.GenerateDogsScreenState.Initial -> {
                 isLoading.value = false
+                imageUrl.value = null
             }
             MainViewModel.GenerateDogsScreenState.Loading -> {
                 isLoading.value = true
@@ -218,7 +220,7 @@ private fun GenerateScreenPortraitPreview() {
                 )
             )
         ),
-        navController = NavController(LocalContext.current)
+        navController = rememberNavController()
     )
 }
 
@@ -234,6 +236,6 @@ private fun GenerateScreenLandscapePreview() {
                 )
             )
         ),
-        navController = NavController(LocalContext.current)
+        navController = rememberNavController()
     )
 }
