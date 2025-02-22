@@ -49,7 +49,7 @@ val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = sfProFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
+        fontSize = 18.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = sfProFontFamily,
