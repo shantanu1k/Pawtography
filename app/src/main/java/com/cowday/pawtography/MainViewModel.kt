@@ -48,9 +48,14 @@ class MainViewModel(
 
     fun getRecentDogRecords() = dogRepository.getRecentDogRecords()
 
+    @OptIn(ExperimentalCoilApi::class)
     fun deleteAllDogRecords() {
         viewModelScope.launch {
             dogRepository.deleteAllDogRecords()
+            val recentRecords = dogRepository.getRecentDogRecords().firstOrNull() ?: return@launch
+            recentRecords.forEach {
+                imageLoader?.diskCache?.remove(it.imageUrl)
+            }
         }
     }
 
