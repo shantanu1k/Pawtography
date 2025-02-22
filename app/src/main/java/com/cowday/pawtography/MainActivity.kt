@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import coil.imageLoader
 import com.cowday.pawtography.data.DogRepository
@@ -20,13 +20,16 @@ class MainActivity : ComponentActivity() {
     private val dogRepository: DogRepository by lazy {
         DogRepository(RetrofitClient.api, (application as PawtographyApplication).dogDatabase)
     }
-    private val viewModel by lazy {
-        val factory = MainViewModel.MainViewModelFactory(dogRepository, imageLoader)
-        ViewModelProvider(this, factory)[MainViewModel::class.java]
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val viewModel = viewModel(
+                modelClass = MainViewModel::class,
+                factory = MainViewModel.MainViewModelFactory(
+                    dogRepository,
+                    application.imageLoader
+                )
+            )
             val navController = rememberNavController()
             PawtographyTheme {
                 PawtographyNavGraph(
